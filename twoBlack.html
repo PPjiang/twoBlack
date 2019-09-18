@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body,html{padding: 0;margin: 0;}
+        *{box-sizing: border-box;}
+        .name-block {font-size: 0;}
+        .box{width: 80vw;margin: 0 auto;padding-top: 10px;position: absolute; top: 0;left: 0; right: 0; bottom: 0;}
+        .name-block input {width: 25%;text-align: center;height: 40px;line-height: 40px;border: none;padding: 5px;outline: none;font-size: 14px;color: #333;}
+        .operation-zone input{width: 25%;height: 40px;line-height: 40px;padding: 5px;outline: none;font-size: 14px;color: #333;}
+        .btn-zone{font-size: 0}
+        .btn-zone button{width: 100%;height: 40px;border: none;color: #fff;margin: 20px 0;outline: none;}
+        #score-block{position: absolute;top: 110px; bottom: 170px;left: 0;right: 0;overflow-y: auto;}
+        .score-block-item{font-size: 0;margin: 5px;}
+        .score-block-item span{display:inline-block;width: 25%;text-align: center;font-size: 14px;}
+        .score-time{font-size: 14px; color: #ccc;margin-bottom: 5px;}
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <button class="zero" style="position: absolute;right: -10vw; top: 0;padding: 5px 10px;background: #ccc;color:#fff;border: none;outline: none;">重置</button>
+        <h1 style="font-size: 20px;text-align:center;color: #666;">计分榜</h1>
+        <div class="name-block">
+            <input type="text" placeholder="玩家1" style="background-color: #F3D7B5">
+            <input type="text" placeholder="玩家2" style="background-color: #FDFFDF">
+            <input type="text" placeholder="玩家3" style="background-color: #DAF9CA">
+            <input type="text" placeholder="玩家4" style="background-color: #C7B3E5">
+        </div>
+        <div id="score-block">
+
+        </div>
+        <div style="position: absolute;bottom: 0;" class="operation-zone">
+            <div style="font-size: 0;">
+                <input type="number" class="score1" placeholder="场面得分" >
+                <input type="number" class="score2" placeholder="场面得分" >
+                <input type="number" class="score3" placeholder="场面得分" >
+                <input type="number" class="score4" placeholder="场面得分" >
+            </div>
+            <div style="font-size: 0;">
+                <input type="number" class="reward1" placeholder="奖励得分" >
+                <input type="number" class="reward2" placeholder="奖励得分" >
+                <input type="number" class="reward3" placeholder="奖励得分" >
+                <input type="number" class="reward4" placeholder="奖励得分" >
+            </div>
+            <div class="btn-zone">
+                <button class="cal" style="background-color: #9DD3FA">计算</button>
+                <!-- <button class="cal" style="background-color: #1F6FB5">撤回</button> -->
+            </div>
+        </div>
+    </div>
+    <script>
+        
+        addLine()
+
+        document.querySelector('.cal').onclick = function(){
+
+            // if(confirm('是否开始计算得分？')){
+                addLine()
+            // }
+        }
+
+        document.querySelector('.zero').onclick = function(){
+            if(confirm('重置操作不可逆，是否重置？')){
+                window.sessionStorage.setItem('backUpVal1', 0)
+                window.sessionStorage.setItem('backUpVal2', 0)
+                window.sessionStorage.setItem('backUpVal3', 0)
+                window.sessionStorage.setItem('backUpVal4', 0)
+                window.sessionStorage.setItem('oldVal1', 0)
+                window.sessionStorage.setItem('oldVal2', 0)
+                window.sessionStorage.setItem('oldVal3', 0)
+                window.sessionStorage.setItem('oldVal4', 0)
+
+                document.querySelector('#score-block').innerHTML = '';
+
+                addLine()
+            }
+        }
+
+        function addLine(){
+
+            var oldVal1 = Number(window.sessionStorage.getItem('oldVal1') || 0)
+            var oldVal2 = Number(window.sessionStorage.getItem('oldVal2') || 0)
+            var oldVal3 = Number(window.sessionStorage.getItem('oldVal3') || 0)
+            var oldVal4 = Number(window.sessionStorage.getItem('oldVal4') || 0)
+
+            var score1 = Number(document.querySelector('.score1').value)
+            var score2 = Number(document.querySelector('.score2').value)
+            var score3 = Number(document.querySelector('.score3').value)
+            var score4 = Number(document.querySelector('.score4').value)
+
+            var reward1 = Number(document.querySelector('.reward1').value)
+            var reward2 = Number(document.querySelector('.reward2').value)
+            var reward3 = Number(document.querySelector('.reward3').value)
+            var reward4 = Number(document.querySelector('.reward4').value)
+
+            var val1 = oldVal1 + score1 + reward1 * 3 - reward2 - reward3 - reward4
+            var val2 = oldVal2 + score2 + reward2 * 3 - reward1 - reward3 - reward4
+            var val3 = oldVal3 + score3 + reward3 * 3 - reward1 - reward2 - reward4
+            var val4 = oldVal4 + score4 + reward4 * 3 - reward1 - reward2 - reward3
+
+            window.sessionStorage.setItem('backUpVal1',oldVal1)
+            window.sessionStorage.setItem('backUpVal2',oldVal2)
+            window.sessionStorage.setItem('backUpVal3',oldVal3)
+            window.sessionStorage.setItem('backUpVal4',oldVal4)
+
+            window.sessionStorage.setItem('oldVal1',val1)
+            window.sessionStorage.setItem('oldVal2',val2)
+            window.sessionStorage.setItem('oldVal3',val3)
+            window.sessionStorage.setItem('oldVal4',val4)
+
+            document.querySelector('.score1').value = ''
+            document.querySelector('.score2').value = ''
+            document.querySelector('.score3').value = ''
+            document.querySelector('.score4').value = ''
+            document.querySelector('.reward1').value = ''
+            document.querySelector('.reward2').value = ''
+            document.querySelector('.reward3').value = ''
+            document.querySelector('.reward4').value = ''
+
+
+            function createDivNode(val1, val2, val3, val4){
+                var div = document.createElement("div")
+                var attrClass = document.createAttribute("class")
+                attrClass.value = "score-block-item"
+                div.setAttributeNode(attrClass)
+                
+                var time = document.createElement("div")
+                var timeAttrClass = document.createAttribute("class")
+                timeAttrClass.value = "score-time"
+                var nowTime = new Date();
+                time.appendChild(document.createTextNode('时间：' + nowTime.getHours() + ':' + nowTime.getMinutes()))
+                time.setAttributeNode(timeAttrClass)
+
+                div.appendChild(time);
+                div.appendChild(createSpanNode(val1))
+                div.appendChild(createSpanNode(val2))
+                div.appendChild(createSpanNode(val3))
+                div.appendChild(createSpanNode(val4))
+                return div
+            }
+
+            function createSpanNode(val){
+                var span = document.createElement("span")
+                span.appendChild(document.createTextNode(val))
+                return span
+            }
+
+            var div = document.getElementById('score-block')
+            div.appendChild(createDivNode(val1,val2,val3,val4))
+
+
+            document.querySelector('#score-block').scrollTop = document.querySelector('#score-block').clientHeight
+        }
+
+    </script>
+</body>
+
+</html>
